@@ -105,32 +105,22 @@ elif choice == "Tanya AI (Gemini)":
 
     user_prompt = st.text_area("Prompt", placeholder="Contoh: Bagaimana cara merawat tanaman cabai agar hasil panen maksimal?")
     
-    # Dropdown untuk memilih timezone
-    import pytz
-    timezones = [
-        "Asia/Jakarta (WIB)", 
-        "Asia/Makassar (WITA)", 
-        "Asia/Jayapura (WIT)",
-        "Asia/Singapore",
-        "Asia/Kuala_Lumpur",
-        "Asia/Tokyo",
-        "Europe/London",
-        "America/New_York"
-    ]
-    selected_timezone = st.selectbox("Pilih Timezone:", timezones, index=0)
-    timezone_code = selected_timezone.split(" ")[0]  # Ambil kode timezone saja
-    
     if st.button("Tanya Gemini"):
         if user_prompt.strip() == "":
             st.warning("Silakan masukkan prompt terlebih dahulu.")
         else:
             # Menampilkan indikator loading
             with st.spinner("Sedang memproses pertanyaan..."):
-                # Dapatkan informasi waktu saat ini untuk ditambahkan ke konteks
+                # Dapatkan informasi waktu saat ini untuk Indonesia (WIB)
                 import datetime
+                import pytz
+                
+                # Gunakan timezone default Indonesia (WIB)
+                timezone_code = "Asia/Jakarta"
+                timezone_label = "WIB (Waktu Indonesia Barat)"
                 
                 try:
-                    # Dapatkan waktu saat ini berdasarkan timezone yang dipilih
+                    # Dapatkan waktu saat ini berdasarkan timezone
                     tz = pytz.timezone(timezone_code)
                     current_time = datetime.datetime.now(tz)
                     
@@ -140,23 +130,42 @@ elif choice == "Tanya AI (Gemini)":
                     tanggal = current_time.strftime("%d %B %Y")
                     hari = current_time.strftime("%A")
                     
+                    # Terjemahkan nama hari dan bulan ke Bahasa Indonesia jika diperlukan
+                    hari_indo = {
+                        "Monday": "Senin", "Tuesday": "Selasa", "Wednesday": "Rabu",
+                        "Thursday": "Kamis", "Friday": "Jumat", "Saturday": "Sabtu", "Sunday": "Minggu"
+                    }
+                    
+                    bulan_indo = {
+                        "January": "Januari", "February": "Februari", "March": "Maret", "April": "April",
+                        "May": "Mei", "June": "Juni", "July": "Juli", "August": "Agustus",
+                        "September": "September", "October": "Oktober", "November": "November", "December": "Desember"
+                    }
+                    
+                    for eng, indo in hari_indo.items():
+                        hari = hari.replace(eng, indo)
+                    
+                    for eng, indo in bulan_indo.items():
+                        tanggal = tanggal.replace(eng, indo)
+                        waktu_lengkap = waktu_lengkap.replace(eng, indo)
+                    
                     # Tambahkan informasi waktu ke dalam prompt
                     context_prompt = f"""
                     INFORMASI WAKTU SAAT INI:
-                    - Saat ini adalah: {waktu_lengkap}
+                    - Saat ini adalah: {hari}, {tanggal}, jam {jam} {timezone_label}
                     - Jam: {jam}
                     - Tanggal: {tanggal}
                     - Hari: {hari}
-                    - Timezone: {selected_timezone}
+                    - Timezone: {timezone_label}
                     
-                    Gunakan informasi waktu di atas dalam memberikan jawaban. Jika pengguna bertanya tentang waktu atau tanggal saat ini, Anda HARUS menggunakan data waktu yang telah disediakan di atas, bukan menyarankan mencari di Google.
+                    PENTING: Gunakan informasi waktu di atas dalam memberikan jawaban. Jika pengguna bertanya tentang waktu atau tanggal saat ini, Anda HARUS menggunakan data waktu yang telah disediakan di atas, bukan menyarankan mencari di Google.
                     
                     PERTANYAAN PENGGUNA:
                     {user_prompt}
                     """
                     
                 except Exception as e:
-                    st.error(f"Error setting timezone: {str(e)}")
+                    st.error(f"Error mendapatkan informasi waktu: {str(e)}")
                     context_prompt = user_prompt
 
                 # API key Gemini
@@ -196,10 +205,6 @@ elif choice == "Tanya AI (Gemini)":
                             ai_jawaban = hasil["candidates"][0]["content"]["parts"][0]["text"]
                             st.success("Jawaban dari Gemini:")
                             st.markdown(ai_jawaban)
-                            
-                            # Tampilkan info waktu yang digunakan
-                            with st.expander("Informasi Waktu yang Digunakan"):
-                                st.info(f"Waktu saat menjawab: {waktu_lengkap}")
                         except Exception as e:
                             st.error(f"Terjadi kesalahan dalam membaca respons dari Gemini: {str(e)}")
                             st.code(hasil)
