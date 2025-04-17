@@ -104,56 +104,110 @@ elif choice == "Tanya AI (Gemini)":
     st.markdown("Masukkan pertanyaan atau prompt apapun yang berhubungan dengan pertanian:")
 
     user_prompt = st.text_area("Prompt", placeholder="Contoh: Bagaimana cara merawat tanaman cabai agar hasil panen maksimal?")
-
+    
+    # Dropdown untuk memilih timezone
+    import pytz
+    timezones = [
+        "Asia/Jakarta (WIB)", 
+        "Asia/Makassar (WITA)", 
+        "Asia/Jayapura (WIT)",
+        "Asia/Singapore",
+        "Asia/Kuala_Lumpur",
+        "Asia/Tokyo",
+        "Europe/London",
+        "America/New_York"
+    ]
+    selected_timezone = st.selectbox("Pilih Timezone:", timezones, index=0)
+    timezone_code = selected_timezone.split(" ")[0]  # Ambil kode timezone saja
+    
     if st.button("Tanya Gemini"):
         if user_prompt.strip() == "":
             st.warning("Silakan masukkan prompt terlebih dahulu.")
         else:
-            # API key Gemini kamu (jangan bagikan ke publik!)
-            api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti jika perlu
-
-            # Gunakan endpoint yang benar untuk Gemini API
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2-pro:generateContent?key={api_key}"
-
-            headers = {
-                "Content-Type": "application/json"
-            }
-
-            data = {
-                "contents": [
-                    {
-                        "parts": [
-                            {
-                                "text": user_prompt
-                            }
-                        ]
-                    }
-                ],
-                "generationConfig": {
-                    "temperature": 0.7,
-                    "topK": 40,
-                    "topP": 0.95,
-                    "maxOutputTokens": 2048
-                }
-            }
-
-            try:
-                response = requests.post(url, headers=headers, json=data)
+            # Menampilkan indikator loading
+            with st.spinner("Sedang memproses pertanyaan..."):
+                # Dapatkan informasi waktu saat ini untuk ditambahkan ke konteks
+                import datetime
                 
-                if response.status_code == 200:
-                    hasil = response.json()
-                    try:
-                        ai_jawaban = hasil["candidates"][0]["content"]["parts"][0]["text"]
-                        st.success("Jawaban dari Gemini:")
-                        st.markdown(ai_jawaban)
-                    except Exception as e:
-                        st.error(f"Terjadi kesalahan dalam membaca respons dari Gemini: {str(e)}")
-                        st.code(hasil)
-                else:
-                    st.error(f"Gagal menghubungi API Gemini. Kode status: {response.status_code}")
-                    st.code(response.text)
-            except Exception as e:
-                st.error(f"Terjadi kesalahan: {str(e)}")
+                try:
+                    # Dapatkan waktu saat ini berdasarkan timezone yang dipilih
+                    tz = pytz.timezone(timezone_code)
+                    current_time = datetime.datetime.now(tz)
+                    
+                    # Format waktu dengan berbagai format yang mungkin diperlukan
+                    waktu_lengkap = current_time.strftime("%A, %d %B %Y, %H:%M:%S %Z")
+                    jam = current_time.strftime("%H:%M")
+                    tanggal = current_time.strftime("%d %B %Y")
+                    hari = current_time.strftime("%A")
+                    
+                    # Tambahkan informasi waktu ke dalam prompt
+                    context_prompt = f"""
+                    INFORMASI WAKTU SAAT INI:
+                    - Saat ini adalah: {waktu_lengkap}
+                    - Jam: {jam}
+                    - Tanggal: {tanggal}
+                    - Hari: {hari}
+                    - Timezone: {selected_timezone}
+                    
+                    Gunakan informasi waktu di atas dalam memberikan jawaban. Jika pengguna bertanya tentang waktu atau tanggal saat ini, Anda HARUS menggunakan data waktu yang telah disediakan di atas, bukan menyarankan mencari di Google.
+                    
+                    PERTANYAAN PENGGUNA:
+                    {user_prompt}
+                    """
+                    
+                except Exception as e:
+                    st.error(f"Error setting timezone: {str(e)}")
+                    context_prompt = user_prompt
+
+                # API key Gemini
+                api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti jika perlu
+
+                # Gunakan endpoint yang benar untuk Gemini API
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={api_key}"
+
+                headers = {
+                    "Content-Type": "application/json"
+                }
+
+                data = {
+                    "contents": [
+                        {
+                            "parts": [
+                                {
+                                    "text": context_prompt
+                                }
+                            ]
+                        }
+                    ],
+                    "generationConfig": {
+                        "temperature": 0.7,
+                        "topK": 40,
+                        "topP": 0.95,
+                        "maxOutputTokens": 2048
+                    }
+                }
+
+                try:
+                    response = requests.post(url, headers=headers, json=data)
+                    
+                    if response.status_code == 200:
+                        hasil = response.json()
+                        try:
+                            ai_jawaban = hasil["candidates"][0]["content"]["parts"][0]["text"]
+                            st.success("Jawaban dari Gemini:")
+                            st.markdown(ai_jawaban)
+                            
+                            # Tampilkan info waktu yang digunakan
+                            with st.expander("Informasi Waktu yang Digunakan"):
+                                st.info(f"Waktu saat menjawab: {waktu_lengkap}")
+                        except Exception as e:
+                            st.error(f"Terjadi kesalahan dalam membaca respons dari Gemini: {str(e)}")
+                            st.code(hasil)
+                    else:
+                        st.error(f"Gagal menghubungi API Gemini. Kode status: {response.status_code}")
+                        st.code(response.text)
+                except Exception as e:
+                    st.error(f"Terjadi kesalahan: {str(e)}")
 
 
 elif choice == "Deteksi Penyakit Tanaman":
