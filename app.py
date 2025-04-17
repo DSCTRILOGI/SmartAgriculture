@@ -113,7 +113,7 @@ elif choice == "Tanya AI (Gemini)":
             api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti jika perlu
 
             # Gunakan endpoint yang benar untuk Gemini API
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={api_key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2-pro:generateContent?key={api_key}"
 
             headers = {
                 "Content-Type": "application/json"
