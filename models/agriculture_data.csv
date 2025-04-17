@@ -1,0 +1,6 @@
+Region,Soil_Type,Crop,Rainfall_mm,Temperature_Celsius,Fertilizer_Used,Irrigation_Used,Weather_Condition,Days_to_Harvest,Yield_tons_per_hectare
+Central,Clay,Rice,300,28,120,Yes,Sunny,100,4.5
+East,Sandy,Corn,200,30,100,No,Cloudy,90,3.2
+West,Loam,Wheat,250,25,110,Yes,Rainy,110,3.8
+Central,Sandy,Rice,280,27,130,Yes,Sunny,105,4.7
+South,Clay,Corn,220,29,115,No,Sunny,95,3.5
