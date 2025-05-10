@@ -43,61 +43,61 @@ st.title("🌾 Smart Agriculture AI")
 
 # Initialize session state for navigation
 if 'menu_choice' not in st.session_state:
-    st.session_state.menu_choice = "Prediksi Cuaca"
+    st.session_state.menu_choice = "Ask AI (Gemini)"
 
 # Sidebar with custom navigation
 with st.sidebar:
-    st.markdown('<p class="sidebar-title">Menu Utama</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sidebar-title">Main Menu</p>', unsafe_allow_html=True)
     # Create navigation buttons
-    if st.button("Tanya AI (Gemini)", key="btn_gemini", use_container_width=True):
-        st.session_state.menu_choice = "Tanya AI (Gemini)"
+    if st.button("Ask AI (Gemini)", key="btn_gemini", use_container_width=True):
+        st.session_state.menu_choice = "Ask AI (Gemini)"
         st.rerun()
-    if st.button("Prediksi Cuaca", key="btn_cuaca", use_container_width=True):
-        st.session_state.menu_choice = "Prediksi Cuaca"
+    if st.button("Weather Prediction", key="btn_cuaca", use_container_width=True):
+        st.session_state.menu_choice = "Weather Prediction"
         st.rerun()
-    if st.button("Deteksi Penyakit Tanaman", key="btn_penyakit", use_container_width=True):
-        st.session_state.menu_choice = "Deteksi Penyakit Tanaman"
+    if st.button("Plant Disease Detection", key="btn_penyakit", use_container_width=True):
+        st.session_state.menu_choice = "Plant Disease Detection"
         st.rerun()
-    if st.button("Deteksi Jenis Tanah", key="btn_tanah", use_container_width=True):
-        st.session_state.menu_choice = "Deteksi Jenis Tanah"
+    if st.button("Soil Type Detection", key="btn_tanah", use_container_width=True):
+        st.session_state.menu_choice = "Soil Type Detection"
         st.rerun()
-    if st.button("Prediksi Hasil Panen", key="btn_panen", use_container_width=True):
-        st.session_state.menu_choice = "Prediksi Hasil Panen"
+    if st.button("Harvest Prediction", key="btn_panen", use_container_width=True):
+        st.session_state.menu_choice = "Harvest Prediction"
         st.rerun()
 
 # Display content based on choice
 choice = st.session_state.menu_choice
 
 # Now implement each page based on the choice
-if choice == "Prediksi Cuaca":
-    st.header("🌦️ Prediksi Cuaca Berdasarkan Kota")
-    city = st.text_input("Masukkan Nama Kota", "Jakarta")
+if choice == "Weather Prediction":
+    st.header("🌦️ Weather Prediction By City")
+    city = st.text_input("Enter City Name", "Jakarta")
     api_key = "0d402044f615b840fb0d0e167bb8b23e"  # Ganti dengan API key WeatherStack
-    if st.button("Prediksi"):
+    if st.button("Prediction"):
         url = f"http://api.weatherstack.com/current?access_key={api_key}&query={city}"
         response = requests.get(url).json()
         if "current" not in response:
-            st.error("Kota tidak ditemukan atau API key salah!")
+            st.error("City not found or API key is incorrect!")
         else:
             temp = response["current"]["temperature"]
             humidity = response["current"]["humidity"]
             weather = response["current"]["weather_descriptions"][0]
-            st.success(f"Cuaca di {city}: {weather}")
-            st.write(f"🌡️ Suhu: {temp}°C")
-            st.write(f"💧 Kelembaban: {humidity}%")
+            st.success(f"Weather in {city}: {weather}")
+            st.write(f"🌡️ Temperature: {temp}°C")
+            st.write(f"💧 Humidity: {humidity}%")
 
-elif choice == "Tanya AI (Gemini)":
-    st.header("🤖 Tanya AI Menggunakan Gemini")
-    st.markdown("Masukkan pertanyaan atau prompt apapun yang berhubungan dengan pertanian:")
-    user_prompt = st.text_area("Prompt", placeholder="Contoh: Bagaimana cara merawat tanaman cabai agar hasil panen maksimal?")
-    if st.button("Tanya Gemini"):
+elif choice == "Ask AI (Gemini)":
+    st.header("🤖 Ask AI Using Gemini")
+    st.markdown("Enter any question or prompt related to farming:")
+    user_prompt = st.text_area("Prompt", placeholder="Example: How do you care for chili plants to get maximum harvest results?")
+    if st.button("Gemini asked"):
         if user_prompt.strip() == "":
-            st.warning("Silakan masukkan prompt terlebih dahulu.")
+            st.warning("Please enter a prompt first.")
         else:
             # Menampilkan indikator loading
-            with st.spinner("Sedang memproses pertanyaan..."):
+            with st.spinner("Currently processing inquiries..."):
                 # Periksa apakah user menanyakan tentang waktu atau tanggal
-                waktu_keywords = ["jam", "waktu", "tanggal", "hari ini", "sekarang", "hari apa", "bulan apa", "tahun berapa", "pukul berapa"]
+                waktu_keywords = ["hour", "time", "date", "today", "now", "what day", "what month", "what year", "what time"]
                 pertanyaan_waktu = any(keyword in user_prompt.lower() for keyword in waktu_keywords)
                 # Jika menanyakan tentang waktu, siapkan informasi waktu
                 if pertanyaan_waktu:
@@ -132,18 +132,18 @@ elif choice == "Tanya AI (Gemini)":
                             waktu_lengkap = waktu_lengkap.replace(eng, indo)
                         # Tambahkan informasi waktu ke dalam prompt hanya jika user menanyakan waktu
                         context_prompt = f"""
-                        INFORMASI WAKTU SAAT INI:
-                        - Saat ini adalah: {hari}, {tanggal}, jam {jam} {timezone_label}
-                        - Jam: {jam}
-                        - Tanggal: {tanggal}
-                        - Hari: {hari}
+                        CURRENT TIME INFORMATION:
+                        - Currently it is: {hari}, {tanggal}, jam {jam} {timezone_label}
+                        - Time: {jam}
+                        - Date: {tanggal}
+                        - Day: {hari}
                         - Timezone: {timezone_label}
-                        PENTING: Gunakan informasi waktu di atas dalam memberikan jawaban. Jika pengguna bertanya tentang waktu atau tanggal saat ini, Anda HARUS menggunakan data waktu yang telah disediakan di atas, bukan menyarankan mencari di Google.
-                        PERTANYAAN PENGGUNA:
+                       IMPORTANT: Use the time information above when providing your answer. If a user asks for the current time or date, you MUST use the time data provided above, rather than suggesting a Google search.
+                       USER QUESTIONS:
                         {user_prompt}
                         """
                     except Exception as e:
-                        st.error(f"Error mendapatkan informasi waktu: {str(e)}")
+                        st.error(f"Error getting time information: {str(e)}")
                         context_prompt = user_prompt
                 else:
                     # Jika tidak menanyakan tentang waktu, gunakan prompt user langsung
@@ -151,7 +151,7 @@ elif choice == "Tanya AI (Gemini)":
                 # API key Gemini
                 api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti jika perlu
                 # Gunakan endpoint yang benar untuk Gemini API
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={api_key}"
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
                 headers = {
                     "Content-Type": "application/json"
                 }
@@ -178,49 +178,49 @@ elif choice == "Tanya AI (Gemini)":
                         hasil = response.json()
                         try:
                             ai_jawaban = hasil["candidates"][0]["content"]["parts"][0]["text"]
-                            st.success("Jawaban dari Gemini:")
+                            st.success("Answer from Gemini:")
                             st.markdown(ai_jawaban)
                         except Exception as e:
-                            st.error(f"Terjadi kesalahan dalam membaca respons dari Gemini: {str(e)}")
+                            st.error(f"There was an error reading the response from Gemini: {str(e)}")
                             st.code(hasil)
                     else:
-                        st.error(f"Gagal menghubungi API Gemini. Kode status: {response.status_code}")
+                        st.error(f"Failed to contact Gemini API. Status code: {response.status_code}")
                         st.code(response.text)
                 except Exception as e:
-                    st.error(f"Terjadi kesalahan: {str(e)}")
+                    st.error(f"There is an error: {str(e)}")
 
-elif choice == "Deteksi Penyakit Tanaman":
-    st.header("🌱 Deteksi Penyakit Tanaman")
+elif choice == "Plant Disease Detection":
+    st.header("🌱 Plant Disease Detection")
     try:
         model = load_model("models/plant_disease_cnn.h5")
     except Exception as e:
-        st.error("Model tidak ditemukan! Pastikan model berada dalam folder 'models'.")
+        st.error("Model not found! Make sure the model is in the 'models' folder.")
     
-    uploaded_file = st.file_uploader("Upload Gambar Daun", type=["jpg", "png"])
+    uploaded_file = st.file_uploader("Upload Leaf Image", type=["jpg", "png"])
     if uploaded_file is not None:
         img = Image.open(uploaded_file)
-        st.image(img, caption="Gambar yang Diupload", use_container_width=True)
+        st.image(img, caption="Uploaded Images", use_container_width=True)
         img = img.resize((150, 150))
         img_array = np.array(img) / 255.0
         img_array = img_array.reshape(1, 150, 150, 3)
         prediction = model.predict(img_array)
-        classes = ["0", "Healthy", "Mold"]
+        classes = ['Bacterial Spot', 'Healthy', 'Leaf Mold', 'Target Spot']
         max_index = np.argmax(prediction)
         
         if max_index < len(classes):
             result = classes[max_index]
-            st.success(f"Hasil Prediksi: {result}")
+            st.success(f"Prediction Results: {result}")
         else:
-            st.error("Prediksi tidak valid, periksa model Anda.")
+            st.error("Invalid prediction, check your model.")
         
         if result != "0":  # Hanya proses jika bukan kelas "0"
             if result == "Healthy":
-                st.info("Tanaman sehat. Tidak ada tindakan yang diperlukan.")
+                st.info("Healthy plant. No action required.")
             else:
                 # Menggunakan AI Gemini untuk mendapatkan informasi tambahan
-                prompt = f"Berikan informasi tentang penyebab dan cara penanganan untuk tanaman yang terkena {result}."
+                prompt = f"Provide information about the causes and treatment methods for affected plants. {result}."
                 api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti jika perlu
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={api_key}"
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
                 headers = {
                     "Content-Type": "application/json"
                 }
@@ -247,28 +247,28 @@ elif choice == "Deteksi Penyakit Tanaman":
                         hasil = response.json()
                         try:
                             ai_jawaban = hasil["candidates"][0]["content"]["parts"][0]["text"]
-                            st.warning(f"Penyebab dan Penanganan untuk {result}:")
+                            st.warning(f"Causes and Treatment for {result}:")
                             st.info(ai_jawaban)
                         except Exception as e:
-                            st.error(f"Terjadi kesalahan dalam membaca respons dari Gemini: {str(e)}")
+                            st.error(f"There was an error reading the response from Gemini: {str(e)}")
                             st.code(hasil)
                     else:
-                        st.error(f"Gagal menghubungi API Gemini. Kode status: {response.status_code}")
+                        st.error(f"Failed to contact Gemini API. Status code:{response.status_code}")
                         st.code(response.text)
                 except Exception as e:
-                    st.error(f"Terjadi kesalahan: {str(e)}")
+                    st.error(f"There is an error: {str(e)}")
 
-elif choice == "Deteksi Jenis Tanah":
-    st.header("🪵 Deteksi Jenis Tanah & Rekomendasi Pupuk")
+elif choice == "Soil Type Detection":
+    st.header("🪵 Soil Type Detection & Rekomendasi Pupuk")
     try:
         model = load_model("models/soil_classifier_cnn.h5")
     except Exception as e:
-        st.error("Model tidak ditemukan! Pastikan model berada dalam folder 'models'.")
+        st.error("Model not found! Make sure the model is in the 'models' folder.")
     
-    uploaded_file = st.file_uploader("Upload Gambar Tanah", type=["jpg", "png"])
+    uploaded_file = st.file_uploader("Upload Land Image", type=["jpg", "png"])
     if uploaded_file is not None:
         img = Image.open(uploaded_file)
-        st.image(img, caption="Gambar yang Diupload", use_container_width=True)
+        st.image(img, caption="Uploaded Images", use_container_width=True)
         
         # Preprocess gambar
         img = img.resize((150, 150))
@@ -278,19 +278,28 @@ elif choice == "Deteksi Jenis Tanah":
         # Prediksi menggunakan model
         prediction = model.predict(img_array)
         classes = ["0", "aluvial", "andosol", "chalk", "entisol", "humus", "inceptisol", "laterit", "sand"]
+        fertile_soils = ["humus", "aluvial", "andosol", "inceptisol"]  # Tanah yang subur
         max_index = np.argmax(prediction)
         
         if max_index < len(classes):
             result = classes[max_index]
-            st.success(f"Hasil Prediksi: {result}")
+            st.success(f"Prediction Results: {result}")
         else:
-            st.error("Prediksi tidak valid, periksa model Anda.")
+            st.error("Invalid prediction, check your model.")
         
         if result != "0":  # Hanya proses jika bukan kelas "0"
-            # Menggunakan AI Gemini untuk mendapatkan informasi tambahan
-            prompt = f"Berikan informasi tentang karakteristik, penyebab kesuburan rendah, dan cara penanganan untuk {result}."
+            # Cek apakah jenis tanah subur atau tidak
+            if result in fertile_soils:
+                st.success(f"✅ {result.title()} is fertile soil and good for plantation!")
+                # Prompt untuk tanah subur
+                prompt = f"Provide information about the characteristics of {result} soil. Include its fertility attributes, ideal crops that grow well in it, and general maintenance tips to maintain its fertility. Format your answer with clear headings and bullet points."
+            else:
+                st.warning(f"⚠️ {result.title()} has lower fertility and needs treatment for optimal plant growth.")
+                # Prompt untuk tanah tidak subur
+                prompt = f"Provide information about the characteristics of {result} soil, why it has low fertility, and detailed steps on how to improve its fertility. Include specific fertilizer recommendations, soil amendments needed, and specific techniques to enhance its structure. Format your answer with clear headings and bullet points."
+            
             api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti jika perlu
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={api_key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
             headers = {
                 "Content-Type": "application/json"
             }
@@ -317,19 +326,44 @@ elif choice == "Deteksi Jenis Tanah":
                     hasil = response.json()
                     try:
                         ai_jawaban = hasil["candidates"][0]["content"]["parts"][0]["text"]
-                        st.warning(f"Informasi untuk {result}:")
-                        st.info(ai_jawaban)
+                        if result in fertile_soils:
+                            st.info(f"Information for {result.title()} Soil:")
+                            st.info(ai_jawaban)
+                            
+                            # Tambahkan rekomendasi khusus untuk tanah subur
+                            st.success("Fertilizer Recommendations:")
+                            st.markdown("""
+                            For fertile soil like this, you only need to maintain its condition with:
+                            - Light organic fertilizer application
+                            - Regular organic matter addition
+                            - Proper crop rotation
+                            - Minimal soil disturbance
+                            """)
+                        else:
+                            st.error(f"Soil Treatment Required for {result.title()}:")
+                            st.info(ai_jawaban)
+                            
+                            # Tambahkan rekomendasi khusus untuk tanah tidak subur
+                            st.warning("Critical Treatment Needed:")
+                            st.markdown("""
+                            This soil type requires significant intervention:
+                            - Heavy fertilizer application
+                            - Soil pH adjustment
+                            - Organic matter incorporation
+                            - Possible drainage improvement
+                            - Regular soil testing
+                            """)
                     except Exception as e:
-                        st.error(f"Terjadi kesalahan dalam membaca respons dari Gemini: {str(e)}")
+                        st.error(f"There was an error reading the response from Gemini: {str(e)}")
                         st.code(hasil)
                 else:
-                    st.error(f"Gagal menghubungi API Gemini. Kode status: {response.status_code}")
+                    st.error(f"Failed to contact Gemini API. Status code: {response.status_code}")
                     st.code(response.text)
             except Exception as e:
-                st.error(f"Terjadi kesalahan: {str(e)}")
+                st.error(f"There is an error: {str(e)}")
 
-elif choice == "Prediksi Hasil Panen":
-    st.header("🌾 Prediksi Hasil Panen (ton/ha)")
+elif choice == "Harvest Prediction":
+    st.header("🌾 Harvest Prediction (ton/ha)")
     try:
         # Load Model
         model = joblib.load("models/yield_prediction_pipeline.pkl")
@@ -355,8 +389,8 @@ elif choice == "Prediksi Hasil Panen":
             "Weather_Condition": weather,
             "Days_to_Harvest": days
         }])
-        if st.button("Prediksi"):
+        if st.button("Prediction"):
             hasil = model.predict(input_data)[0]
-            st.success(f"Perkiraan Hasil Panen: {hasil:.2f} ton/ha")
+            st.success(f"Estimated Harvest Results: {hasil:.2f} ton/ha")
     except Exception as e:
-        st.error("Model tidak ditemukan! Pastikan model berada dalam folder 'models'.")
+        st.error("Model not found! Make sure the model is in the 'models' folder.")
