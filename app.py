@@ -193,7 +193,7 @@ if choice == "Weather Prediction":
                             st.metric("🌊 Rainfall Amount", forecast.get('rainfall_amount', 'N/A'))
                         with col3:
                             st.metric("💨 Wind Speed", forecast.get('wind_speed', 'N/A'))
-                            st.metric("☀️ Sun Exposure", forecast.get('sun_exposure', 'N/A'))
+                            st.metric("☀️ Sun Exposure", forecast.get('sun_exposure'))
                         
                         # Agricultural Impact Section
                         st.subheader("🌱 Agricultural Impact")
