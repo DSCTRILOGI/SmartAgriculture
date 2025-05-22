@@ -182,7 +182,7 @@ if choice == "Weather Prediction":
                         st.subheader("🌤️ Weather Forecast")
                         forecast = weather_data.get('weather_forecast', {})
                         
-                        col1, col2, col3, col4 = st.columns(2)
+                        col1, col2, col3, col4 = st.columns(4)
                         with col1:
                             st.metric("🌡️ Temperature", forecast.get('temperature_range', 'N/A'))
                         with col2:
