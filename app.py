@@ -97,7 +97,7 @@ if choice == "Weather Prediction":
         ])
         
         prediction_days = st.selectbox("Prediction Period", [
-            "3 days", "7 days", "14 days", "30 days"
+            "3 days", "7 days", "14 days", "30 days", "60 days", "90 days", "180 days"
         ])
     
     api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti dengan API key Gemini Anda
@@ -184,17 +184,6 @@ if choice == "Weather Prediction":
                         
                         # Display hasil prediksi
                         st.success(f"🌾 Agricultural Weather Prediction for {weather_data.get('location', city)}")
-                        
-                        # Basic Info
-                        col1, col2, col3 = st.columns(3)
-                        with col1:
-                            st.info(f"🌾 **Crop:** {weather_data.get('crop', crop_type)}")
-                        with col2:
-                            st.info(f"🌱 **Growth Stage:** {weather_data.get('growth_stage', growth_stage)}")
-                        with col3:
-                            st.info(f"📅 **Prediction Period:** {weather_data.get('prediction_period', prediction_days)}")
-                        
-                        st.markdown("---")
                         
                         # Weather Forecast Section
                         st.subheader("🌤️ Weather Forecast")
