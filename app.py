@@ -410,10 +410,10 @@ elif choice == "Plant Disease Detection":
         
         if result != "0":  # Hanya proses jika bukan kelas "0"
             if result == "Healthy":
-                st.info("Healthy plant. No action required.")
+                st.info("Tanaman sehat. Tidak perlu tindakan apa pun.")
             else:
                 # Menggunakan AI Gemini untuk mendapatkan informasi tambahan
-                prompt = f"Provide information about the causes and treatment methods for affected plants. {result}."
+                prompt = f"Memberikan informasi tentang penyebab dan metode perawatan untuk tanaman yang terserang {result}."
                 api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti jika perlu
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
                 headers = {
@@ -454,7 +454,7 @@ elif choice == "Plant Disease Detection":
                     st.error(f"There is an error: {str(e)}")
 
 elif choice == "Soil Type Detection":
-    st.header("🪵 Soil Type Detection & Rekomendasi Pupuk")
+    st.header("🪵 Soil Type Detection & Fertilizer Recommendations")
     try:
         model = load_model("models/soil_classifier_cnn.h5")
     except Exception as e:
@@ -485,13 +485,13 @@ elif choice == "Soil Type Detection":
         if result != "0":  # Hanya proses jika bukan kelas "0"
             # Cek apakah jenis tanah subur atau tidak
             if result in fertile_soils:
-                st.success(f"✅ {result.title()} is fertile soil and good for plantation!")
+                st.success(f"✅ {result.title()} tanahnya subur dan bagus untuk perkebunan!")
                 # Prompt untuk tanah subur
-                prompt = f"Provide information about the characteristics of {result} soil. Include its fertility attributes, ideal crops that grow well in it, and general maintenance tips to maintain its fertility. Format your answer with clear headings and bullet points."
+                prompt = f"Memberikan informasi tentang karakteristik {result} tanah. Sertakan atribut kesuburannya, tanaman ideal yang tumbuh baik di dalamnya, dan kiat perawatan umum untuk menjaga kesuburannya. Format jawaban Anda dengan judul dan poin-poin yang jelas."
             else:
-                st.warning(f"⚠️ {result.title()} has lower fertility and needs treatment for optimal plant growth.")
+                st.warning(f"⚠️ {result.title()} memiliki kesuburan lebih rendah dan memerlukan perawatan untuk pertumbuhan tanaman yang optimal.")
                 # Prompt untuk tanah tidak subur
-                prompt = f"Provide information about the characteristics of {result} soil, why it has low fertility, and detailed steps on how to improve its fertility. Include specific fertilizer recommendations, soil amendments needed, and specific techniques to enhance its structure. Format your answer with clear headings and bullet points."
+                prompt = f"Memberikan informasi tentang karakteristik {result} tanah, mengapa kesuburannya rendah, dan langkah-langkah terperinci tentang cara meningkatkan kesuburannya. Sertakan rekomendasi pupuk tertentu, amandemen tanah yang diperlukan, dan teknik khusus untuk meningkatkan strukturnya. Format jawaban Anda dengan judul dan poin-poin yang jelas."
             
             api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti jika perlu
             url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
