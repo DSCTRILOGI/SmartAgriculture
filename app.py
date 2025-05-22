@@ -97,7 +97,7 @@ if choice == "Weather Prediction":
         ])
         
         prediction_days = st.selectbox("Prediction Period", [
-            "3 days", "7 days", "14 days", "30 days"
+            "3 days", "7 days", "14 days", "30 days", "60 days", "90 days"
         ])
     
     api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti dengan API key Gemini Anda
