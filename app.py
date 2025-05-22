@@ -106,47 +106,47 @@ if choice == "Weather Prediction":
             url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
             
             # Prompt yang disesuaikan untuk pertanian
-            prompt = f"""Sebagai ahli agroklimatologi, berikan prediksi cuaca untuk pertanian dalam format JSON yang CLEAN dan VALID.
+            prompt = f"""Sebagai ahli agroklimatologi, berikan prediksi cuaca untuk pertanian dalam format JSON dengan struktur berikut:
 
             Lokasi: {city}
             Jenis Tanaman: {crop_type}
             Tahap Pertumbuhan: {growth_stage}
             Periode Prediksi: {prediction_days}
 
-            WAJIB menggunakan format JSON yang EXACT seperti ini (tanpa tambahan text atau markdown):
+            Format JSON yang diinginkan:
             {{
                 "location": "{city}",
                 "crop": "{crop_type}",
                 "growth_stage": "{growth_stage}",
                 "prediction_period": "{prediction_days}",
                 "weather_forecast": {{
-                    "temperature_range": "24-33°C",
-                    "humidity": "80-95%",
-                    "rainfall_probability": "60-80%",
-                    "rainfall_amount": "250-400 mm/month",
-                    "wind_speed": "5-15 km/h",
-                    "sun_exposure": "4-6 hours/day"
+                    "temperature_range": "suhu minimum-maksimum dalam celsius",
+                    "humidity": "kelembaban rata-rata dalam persen",
+                    "rainfall_probability": "probabilitas hujan dalam persen",
+                    "rainfall_amount": "perkiraan curah hujan dalam mm",
+                    "wind_speed": "kecepatan angin rata-rata",
+                    "sun_exposure": "tingkat paparan sinar matahari"
                 }},
                 "agricultural_impact": {{
-                    "crop_suitability": "Baik",
-                    "growth_condition": "Kondisi ideal untuk persiapan lahan dengan curah hujan yang cukup",
-                    "potential_risks": ["Genangan air berlebih", "Serangan hama karena kelembaban tinggi"],
-                    "water_requirement": "Sedang - natural rainfall mencukupi"
+                    "crop_suitability": "tingkat kesesuaian cuaca untuk tanaman (sangat baik/baik/cukup/kurang)",
+                    "growth_condition": "kondisi pertumbuhan yang diperkirakan",
+                    "potential_risks": ["daftar risiko potensial"],
+                    "water_requirement": "kebutuhan air/irigasi"
                 }},
                 "recommendations": {{
-                    "farming_activities": ["Persiapan lahan sawah", "Pengolahan tanah", "Pembuatan saluran drainase"],
-                    "preventive_measures": ["Pastikan drainase baik", "Monitor kelembaban tanah"],
-                    "optimal_timing": ["Pagi hari untuk aktivitas lapangan", "Hindari siang hari saat hujan"],
-                    "irrigation_schedule": "Tidak perlu irigasi tambahan - rainfall natural mencukupi"
+                    "farming_activities": ["aktivitas pertanian yang disarankan"],
+                    "preventive_measures": ["tindakan pencegahan yang perlu dilakukan"],
+                    "optimal_timing": ["waktu optimal untuk aktivitas tertentu"],
+                    "irrigation_schedule": "jadwal irigasi yang disarankan"
                 }},
                 "pest_disease_alert": {{
-                    "risk_level": "Sedang",
-                    "potential_issues": ["Penyakit busuk akar", "Serangan keong mas"],
-                    "prevention_tips": ["Aplikasi fungisida preventif", "Kontrol gulma"]
+                    "risk_level": "tingkat risiko hama/penyakit (rendah/sedang/tinggi)",
+                    "potential_issues": ["kemungkinan masalah hama/penyakit"],
+                    "prevention_tips": ["tips pencegahan"]
                 }}
             }}
 
-            PENTING: Response HARUS berupa JSON valid tanpa tambahan text apapun."""
+            Berikan prediksi yang realistis berdasarkan kondisi iklim Indonesia dan karakteristik tanaman yang dipilih."""
             
             payload = {
                 "contents": [
