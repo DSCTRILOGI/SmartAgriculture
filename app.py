@@ -287,12 +287,16 @@ if choice == "Weather Prediction":
                         
                     except (json.JSONDecodeError, KeyError) as e:
                         # Jika gagal parse JSON, tampilkan response langsung dengan format yang lebih baik
-                        st.success(f"🌾 Agricultural Weather Analysis for {city}")
-                        st.write("**Crop:** " + crop_type)
-                        st.write("**Growth Stage:** " + growth_stage)
-                        st.write("**Prediction Period:** " + prediction_days)
-                        st.write("---")
-                        st.write(gemini_response)
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            st.metric("🌡️ Temperature", forecast.get('temperature_range', 'N/A'))
+                            st.metric("💧 Humidity", forecast.get('humidity', 'N/A'))
+                        with col2:
+                            st.metric("🌧️ Rain Probability", forecast.get('rainfall_probability', 'N/A'))
+                            st.metric("🌊 Rainfall Amount", forecast.get('rainfall_amount', 'N/A'))
+                        with col3:
+                            st.metric("💨 Wind Speed", forecast.get('wind_speed', 'N/A'))
+                            st.metric("☀️ Sun Exposure", forecast.get('sun_exposure', 'N/A'))
                         
                 else:
                     st.error("No response from Gemini API")
