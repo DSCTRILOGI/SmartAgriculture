@@ -70,21 +70,247 @@ choice = st.session_state.menu_choice
 
 # Now implement each page based on the choice
 if choice == "Weather Prediction":
-    st.header("🌦️ Weather Prediction By City")
-    city = st.text_input("Enter City Name", "Jakarta")
-    api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti dengan API key WeatherStack
-    if st.button("Prediction"):
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}&query={city}"
-        response = requests.get(url).json()
-        if "current" not in response:
-            st.error("City not found or API key is incorrect!")
-        else:
-            temp = response["current"]["temperature"]
-            humidity = response["current"]["humidity"]
-            weather = response["current"]["weather_descriptions"][0]
-            st.success(f"Weather in {city}: {weather}")
-            st.write(f"🌡️ Temperature: {temp}°C")
-            st.write(f"💧 Humidity: {humidity}%")
+    st.header("🌾 Weather Prediction for Agriculture")
+    
+    # Input section
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        city = st.text_input("Enter City/Location", "Jakarta")
+        crop_type = st.selectbox("Select Crop Type", [
+            "Padi (Rice)", "Jagung (Corn)", "Kedelai (Soybean)", 
+            "Cabai (Chili)", "Tomat (Tomato)", "Kentang (Potato)",
+            "Bawang Merah (Shallot)", "Kangkung (Water Spinach)", 
+            "Bayam (Spinach)", "Selada (Lettuce)", "Other"
+        ])
+        
+    with col2:
+        growth_stage = st.selectbox("Growth Stage", [
+            "Persiapan Lahan (Land Preparation)",
+            "Penanaman (Planting)", 
+            "Pertumbuhan Awal (Early Growth)",
+            "Pertumbuhan Vegetatif (Vegetative Growth)",
+            "Pembungaan (Flowering)",
+            "Pembuahan (Fruiting)",
+            "Panen (Harvesting)"
+        ])
+        
+        prediction_days = st.selectbox("Prediction Period", [
+            "3 days", "7 days", "14 days", "30 days"
+        ])
+    
+    api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti dengan API key Gemini Anda
+    
+    if st.button("🌦️ Get Agricultural Weather Prediction"):
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
+            
+            # Prompt yang disesuaikan untuk pertanian
+            prompt = f"""Sebagai ahli agroklimatologi, berikan prediksi cuaca untuk pertanian dalam format JSON dengan struktur berikut:
+
+            Lokasi: {city}
+            Jenis Tanaman: {crop_type}
+            Tahap Pertumbuhan: {growth_stage}
+            Periode Prediksi: {prediction_days}
+
+            Format JSON yang diinginkan:
+            {{
+                "location": "{city}",
+                "crop": "{crop_type}",
+                "growth_stage": "{growth_stage}",
+                "prediction_period": "{prediction_days}",
+                "weather_forecast": {{
+                    "temperature_range": "suhu minimum-maksimum dalam celsius",
+                    "humidity": "kelembaban rata-rata dalam persen",
+                    "rainfall_probability": "probabilitas hujan dalam persen",
+                    "rainfall_amount": "perkiraan curah hujan dalam mm",
+                    "wind_speed": "kecepatan angin rata-rata",
+                    "sun_exposure": "tingkat paparan sinar matahari"
+                }},
+                "agricultural_impact": {{
+                    "crop_suitability": "tingkat kesesuaian cuaca untuk tanaman (sangat baik/baik/cukup/kurang)",
+                    "growth_condition": "kondisi pertumbuhan yang diperkirakan",
+                    "potential_risks": ["daftar risiko potensial"],
+                    "water_requirement": "kebutuhan air/irigasi"
+                }},
+                "recommendations": {{
+                    "farming_activities": ["aktivitas pertanian yang disarankan"],
+                    "preventive_measures": ["tindakan pencegahan yang perlu dilakukan"],
+                    "optimal_timing": ["waktu optimal untuk aktivitas tertentu"],
+                    "irrigation_schedule": "jadwal irigasi yang disarankan"
+                }},
+                "pest_disease_alert": {{
+                    "risk_level": "tingkat risiko hama/penyakit (rendah/sedang/tinggi)",
+                    "potential_issues": ["kemungkinan masalah hama/penyakit"],
+                    "prevention_tips": ["tips pencegahan"]
+                }}
+            }}
+
+            Berikan prediksi yang realistis berdasarkan kondisi iklim Indonesia dan karakteristik tanaman yang dipilih."""
+            
+            payload = {
+                "contents": [
+                    {
+                        "parts": [
+                            {
+                                "text": prompt
+                            }
+                        ]
+                    }
+                ]
+            }
+            
+            headers = {"Content-Type": "application/json"}
+            response = requests.post(url, json=payload, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if "candidates" in data and len(data["candidates"]) > 0:
+                    gemini_response = data["candidates"][0]["content"]["parts"][0]["text"]
+                    
+                    try:
+                        # Ekstrak JSON dari response
+                        json_start = gemini_response.find('{')
+                        json_end = gemini_response.rfind('}') + 1
+                        json_str = gemini_response[json_start:json_end]
+                        
+                        weather_data = json.loads(json_str)
+                        
+                        # Display hasil prediksi
+                        st.success(f"🌾 Agricultural Weather Prediction for {weather_data['location']}")
+                        
+                        # Weather Forecast Section
+                        st.subheader("🌤️ Weather Forecast")
+                        forecast = weather_data['weather_forecast']
+                        
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            st.metric("🌡️ Temperature", forecast['temperature_range'])
+                            st.metric("💧 Humidity", forecast['humidity'])
+                        with col2:
+                            st.metric("🌧️ Rain Probability", forecast['rainfall_probability'])
+                            st.metric("🌊 Rainfall Amount", forecast['rainfall_amount'])
+                        with col3:
+                            st.metric("💨 Wind Speed", forecast['wind_speed'])
+                            st.metric("☀️ Sun Exposure", forecast['sun_exposure'])
+                        
+                        # Agricultural Impact Section
+                        st.subheader("🌱 Agricultural Impact")
+                        impact = weather_data['agricultural_impact']
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            suitability = impact['crop_suitability']
+                            if "sangat baik" in suitability.lower():
+                                st.success(f"✅ Crop Suitability: {suitability}")
+                            elif "baik" in suitability.lower():
+                                st.info(f"ℹ️ Crop Suitability: {suitability}")
+                            else:
+                                st.warning(f"⚠️ Crop Suitability: {suitability}")
+                            
+                            st.write(f"🌿 **Growth Condition:** {impact['growth_condition']}")
+                            st.write(f"💧 **Water Requirement:** {impact['water_requirement']}")
+                        
+                        with col2:
+                            st.write("⚠️ **Potential Risks:**")
+                            for risk in impact['potential_risks']:
+                                st.write(f"• {risk}")
+                        
+                        # Recommendations Section
+                        st.subheader("📋 Farming Recommendations")
+                        recs = weather_data['recommendations']
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.write("🚜 **Recommended Activities:**")
+                            for activity in recs['farming_activities']:
+                                st.write(f"• {activity}")
+                            
+                            st.write("🕐 **Optimal Timing:**")
+                            for timing in recs['optimal_timing']:
+                                st.write(f"• {timing}")
+                        
+                        with col2:
+                            st.write("🛡️ **Preventive Measures:**")
+                            for measure in recs['preventive_measures']:
+                                st.write(f"• {measure}")
+                            
+                            st.write(f"💧 **Irrigation Schedule:** {recs['irrigation_schedule']}")
+                        
+                        # Pest & Disease Alert Section
+                        st.subheader("🐛 Pest & Disease Alert")
+                        pest_alert = weather_data['pest_disease_alert']
+                        
+                        risk_level = pest_alert['risk_level'].lower()
+                        if "tinggi" in risk_level:
+                            st.error(f"🚨 Risk Level: {pest_alert['risk_level']}")
+                        elif "sedang" in risk_level:
+                            st.warning(f"⚠️ Risk Level: {pest_alert['risk_level']}")
+                        else:
+                            st.success(f"✅ Risk Level: {pest_alert['risk_level']}")
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.write("🦠 **Potential Issues:**")
+                            for issue in pest_alert['potential_issues']:
+                                st.write(f"• {issue}")
+                        
+                        with col2:
+                            st.write("🛡️ **Prevention Tips:**")
+                            for tip in pest_alert['prevention_tips']:
+                                st.write(f"• {tip}")
+                        
+                    except (json.JSONDecodeError, KeyError) as e:
+                        # Jika gagal parse JSON, tampilkan response langsung dengan format yang lebih baik
+                        st.success(f"🌾 Agricultural Weather Analysis for {city}")
+                        st.write("**Crop:** " + crop_type)
+                        st.write("**Growth Stage:** " + growth_stage)
+                        st.write("**Prediction Period:** " + prediction_days)
+                        st.write("---")
+                        st.write(gemini_response)
+                        
+                else:
+                    st.error("No response from Gemini API")
+            else:
+                st.error(f"API Error: {response.status_code} - {response.text}")
+                
+        except requests.exceptions.RequestException as e:
+            st.error(f"Network error: {str(e)}")
+        except Exception as e:
+            st.error(f"An unexpected error occurred: {str(e)}")
+    
+    # Additional Information Section
+    with st.expander("ℹ️ About Agricultural Weather Prediction"):
+        st.write("""
+        **Fitur Prediksi Cuaca Pertanian:**
+        
+        🌡️ **Parameter Cuaca:**
+        - Suhu udara (minimum & maksimum)
+        - Kelembaban relatif
+        - Probabilitas dan curah hujan
+        - Kecepatan angin
+        - Intensitas sinar matahari
+        
+        🌱 **Analisis Dampak Pertanian:**
+        - Kesesuaian cuaca untuk jenis tanaman
+        - Kondisi pertumbuhan yang diperkirakan
+        - Identifikasi risiko potensial
+        - Kebutuhan air dan irigasi
+        
+        📋 **Rekomendasi Praktis:**
+        - Aktivitas pertanian yang optimal
+        - Tindakan pencegahan
+        - Waktu terbaik untuk berbagai kegiatan
+        - Jadwal irigasi yang efisien
+        
+        🐛 **Alert Hama & Penyakit:**
+        - Tingkat risiko berdasarkan kondisi cuaca
+        - Prediksi masalah potensial
+        - Tips pencegahan dini
+        
+        **Catatan:** Prediksi ini berdasarkan analisis AI dan sebaiknya dikombinasikan dengan pengamatan lapangan dan konsultasi dengan ahli pertanian lokal.
+        """)
 
 elif choice == "Ask AI (Gemini)":
     st.header("🤖 Ask AI Using Gemini")
