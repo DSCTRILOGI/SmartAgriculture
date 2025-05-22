@@ -182,84 +182,108 @@ if choice == "Weather Prediction":
                         
                         # Weather Forecast Section
                         st.subheader("🌤️ Weather Forecast")
-                        forecast = weather_data['weather_forecast']
+                        forecast = weather_data.get('weather_forecast', {})
                         
                         col1, col2, col3 = st.columns(3)
                         with col1:
-                            st.metric("🌡️ Temperature", forecast['temperature_range'])
-                            st.metric("💧 Humidity", forecast['humidity'])
+                            st.metric("🌡️ Temperature", forecast.get('temperature_range', 'N/A'))
+                            st.metric("💧 Humidity", forecast.get('humidity', 'N/A'))
                         with col2:
-                            st.metric("🌧️ Rain Probability", forecast['rainfall_probability'])
-                            st.metric("🌊 Rainfall Amount", forecast['rainfall_amount'])
+                            st.metric("🌧️ Rain Probability", forecast.get('rainfall_probability', 'N/A'))
+                            st.metric("🌊 Rainfall Amount", forecast.get('rainfall_amount', 'N/A'))
                         with col3:
-                            st.metric("💨 Wind Speed", forecast['wind_speed'])
-                            st.metric("☀️ Sun Exposure", forecast['sun_exposure'])
+                            st.metric("💨 Wind Speed", forecast.get('wind_speed', 'N/A'))
+                            st.metric("☀️ Sun Exposure", forecast.get('sun_exposure', 'N/A'))
                         
                         # Agricultural Impact Section
                         st.subheader("🌱 Agricultural Impact")
-                        impact = weather_data['agricultural_impact']
+                        impact = weather_data.get('agricultural_impact', {})
                         
                         col1, col2 = st.columns(2)
                         with col1:
-                            suitability = impact['crop_suitability']
-                            if "sangat baik" in suitability.lower():
+                            suitability = impact.get('crop_suitability', 'Unknown')
+                            if "sangat baik" in suitability.lower() or "excellent" in suitability.lower():
                                 st.success(f"✅ Crop Suitability: {suitability}")
-                            elif "baik" in suitability.lower():
+                            elif "baik" in suitability.lower() or "good" in suitability.lower():
                                 st.info(f"ℹ️ Crop Suitability: {suitability}")
                             else:
                                 st.warning(f"⚠️ Crop Suitability: {suitability}")
                             
-                            st.write(f"🌿 **Growth Condition:** {impact['growth_condition']}")
-                            st.write(f"💧 **Water Requirement:** {impact['water_requirement']}")
+                            st.write(f"🌿 **Growth Condition:** {impact.get('growth_condition', 'N/A')}")
+                            st.write(f"💧 **Water Requirement:** {impact.get('water_requirement', 'N/A')}")
                         
                         with col2:
                             st.write("⚠️ **Potential Risks:**")
-                            for risk in impact['potential_risks']:
-                                st.write(f"• {risk}")
+                            risks = impact.get('potential_risks', [])
+                            if isinstance(risks, list):
+                                for risk in risks:
+                                    st.write(f"• {risk}")
+                            else:
+                                st.write(f"• {risks}")
                         
                         # Recommendations Section
                         st.subheader("📋 Farming Recommendations")
-                        recs = weather_data['recommendations']
+                        recs = weather_data.get('recommendations', {})
                         
                         col1, col2 = st.columns(2)
                         with col1:
                             st.write("🚜 **Recommended Activities:**")
-                            for activity in recs['farming_activities']:
-                                st.write(f"• {activity}")
+                            activities = recs.get('farming_activities', [])
+                            if isinstance(activities, list):
+                                for activity in activities:
+                                    st.write(f"• {activity}")
+                            else:
+                                st.write(f"• {activities}")
                             
                             st.write("🕐 **Optimal Timing:**")
-                            for timing in recs['optimal_timing']:
-                                st.write(f"• {timing}")
+                            timings = recs.get('optimal_timing', [])
+                            if isinstance(timings, list):
+                                for timing in timings:
+                                    st.write(f"• {timing}")
+                            else:
+                                st.write(f"• {timings}")
                         
                         with col2:
                             st.write("🛡️ **Preventive Measures:**")
-                            for measure in recs['preventive_measures']:
-                                st.write(f"• {measure}")
+                            measures = recs.get('preventive_measures', [])
+                            if isinstance(measures, list):
+                                for measure in measures:
+                                    st.write(f"• {measure}")
+                            else:
+                                st.write(f"• {measures}")
                             
-                            st.write(f"💧 **Irrigation Schedule:** {recs['irrigation_schedule']}")
+                            st.write(f"💧 **Irrigation Schedule:** {recs.get('irrigation_schedule', 'N/A')}")
                         
                         # Pest & Disease Alert Section
                         st.subheader("🐛 Pest & Disease Alert")
-                        pest_alert = weather_data['pest_disease_alert']
+                        pest_alert = weather_data.get('pest_disease_alert', {})
                         
-                        risk_level = pest_alert['risk_level'].lower()
-                        if "tinggi" in risk_level:
-                            st.error(f"🚨 Risk Level: {pest_alert['risk_level']}")
-                        elif "sedang" in risk_level:
-                            st.warning(f"⚠️ Risk Level: {pest_alert['risk_level']}")
+                        risk_level = pest_alert.get('risk_level', 'Unknown').lower()
+                        if "tinggi" in risk_level or "high" in risk_level:
+                            st.error(f"🚨 Risk Level: {pest_alert.get('risk_level', 'Unknown')}")
+                        elif "sedang" in risk_level or "medium" in risk_level:
+                            st.warning(f"⚠️ Risk Level: {pest_alert.get('risk_level', 'Unknown')}")
                         else:
-                            st.success(f"✅ Risk Level: {pest_alert['risk_level']}")
+                            st.success(f"✅ Risk Level: {pest_alert.get('risk_level', 'Unknown')}")
                         
                         col1, col2 = st.columns(2)
                         with col1:
                             st.write("🦠 **Potential Issues:**")
-                            for issue in pest_alert['potential_issues']:
-                                st.write(f"• {issue}")
+                            issues = pest_alert.get('potential_issues', [])
+                            if isinstance(issues, list):
+                                for issue in issues:
+                                    st.write(f"• {issue}")
+                            else:
+                                st.write(f"• {issues}")
                         
                         with col2:
                             st.write("🛡️ **Prevention Tips:**")
-                            for tip in pest_alert['prevention_tips']:
-                                st.write(f"• {tip}")
+                            tips = pest_alert.get('prevention_tips', [])
+                            if isinstance(tips, list):
+                                for tip in tips:
+                                    st.write(f"• {tip}")
+                            else:
+                                st.write(f"• {tips}")
                         
                     except (json.JSONDecodeError, KeyError) as e:
                         # Jika gagal parse JSON, tampilkan response langsung dengan format yang lebih baik
