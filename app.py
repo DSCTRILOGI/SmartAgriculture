@@ -99,9 +99,6 @@ if choice == "Weather Prediction":
             "3 days", "7 days", "14 days", "30 days"
         ])
     
-    # Debug mode (opsional)
-    debug_mode = st.sidebar.checkbox("🔧 Debug Mode (Show Raw JSON)", value=False)
-    
     api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti dengan API key Gemini Anda
     
     if st.button("🌦️ Get Agricultural Weather Prediction"):
