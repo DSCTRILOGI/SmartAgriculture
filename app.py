@@ -124,8 +124,7 @@ if choice == "Weather Prediction":
                     "humidity": "kelembaban rata-rata dalam persen",
                     "rainfall_probability": "probabilitas hujan dalam persen",
                     "rainfall_amount": "perkiraan curah hujan dalam mm",
-                    "wind_speed": "kecepatan angin rata-rata",
-                    "sun_exposure": "tingkat paparan sinar matahari"
+                    "wind_speed": "kecepatan angin rata-rata"
                 }},
                 "agricultural_impact": {{
                     "crop_suitability": "tingkat kesesuaian cuaca untuk tanaman (sangat baik/baik/cukup/kurang)",
@@ -193,7 +192,7 @@ if choice == "Weather Prediction":
                             st.metric("🌊 Rainfall Amount", forecast.get('rainfall_amount', 'N/A'))
                         with col3:
                             st.metric("💨 Wind Speed", forecast.get('wind_speed', 'N/A'))
-                            st.metric("☀️ Sun Exposure", forecast.get('sun_exposure'))
+                            
                         
                         # Agricultural Impact Section
                         st.subheader("🌱 Agricultural Impact")
