@@ -279,38 +279,6 @@ if choice == "Weather Prediction":
             st.error(f"Network error: {str(e)}")
         except Exception as e:
             st.error(f"An unexpected error occurred: {str(e)}")
-    
-    # Additional Information Section
-    with st.expander("ℹ️ About Agricultural Weather Prediction"):
-        st.write("""
-        **Fitur Prediksi Cuaca Pertanian:**
-        
-        🌡️ **Parameter Cuaca:**
-        - Suhu udara (minimum & maksimum)
-        - Kelembaban relatif
-        - Probabilitas dan curah hujan
-        - Kecepatan angin
-        - Intensitas sinar matahari
-        
-        🌱 **Analisis Dampak Pertanian:**
-        - Kesesuaian cuaca untuk jenis tanaman
-        - Kondisi pertumbuhan yang diperkirakan
-        - Identifikasi risiko potensial
-        - Kebutuhan air dan irigasi
-        
-        📋 **Rekomendasi Praktis:**
-        - Aktivitas pertanian yang optimal
-        - Tindakan pencegahan
-        - Waktu terbaik untuk berbagai kegiatan
-        - Jadwal irigasi yang efisien
-        
-        🐛 **Alert Hama & Penyakit:**
-        - Tingkat risiko berdasarkan kondisi cuaca
-        - Prediksi masalah potensial
-        - Tips pencegahan dini
-        
-        **Catatan:** Prediksi ini berdasarkan analisis AI dan sebaiknya dikombinasikan dengan pengamatan lapangan dan konsultasi dengan ahli pertanian lokal.
-        """)
 
 elif choice == "Ask AI (Gemini)":
     st.header("🤖 Ask AI Using Gemini")
