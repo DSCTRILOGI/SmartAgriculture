@@ -287,16 +287,7 @@ if choice == "Weather Prediction":
                         
                     except (json.JSONDecodeError, KeyError) as e:
                         # Jika gagal parse JSON, tampilkan response langsung dengan format yang lebih baik
-                        col1, col2, col3 = st.columns(3)
-                        with col1:
-                            st.metric("🌡️ Temperature", forecast.get('temperature_range', 'N/A'))
-                            st.metric("💧 Humidity", forecast.get('humidity', 'N/A'))
-                        with col2:
-                            st.metric("🌧️ Rain Probability", forecast.get('rainfall_probability', 'N/A'))
-                            st.metric("🌊 Rainfall Amount", forecast.get('rainfall_amount', 'N/A'))
-                        with col3:
-                            st.metric("💨 Wind Speed", forecast.get('wind_speed', 'N/A'))
-                            st.metric("☀️ Sun Exposure", forecast.get('sun_exposure', 'N/A'))
+                        st.markdown("Silahkan Input Data Ulang")
                         
                 else:
                     st.error("No response from Gemini API")
@@ -307,38 +298,6 @@ if choice == "Weather Prediction":
             st.error(f"Network error: {str(e)}")
         except Exception as e:
             st.error(f"An unexpected error occurred: {str(e)}")
-    
-    # Additional Information Section
-    with st.expander("ℹ️ About Agricultural Weather Prediction"):
-        st.write("""
-        **Fitur Prediksi Cuaca Pertanian:**
-        
-        🌡️ **Parameter Cuaca:**
-        - Suhu udara (minimum & maksimum)
-        - Kelembaban relatif
-        - Probabilitas dan curah hujan
-        - Kecepatan angin
-        - Intensitas sinar matahari
-        
-        🌱 **Analisis Dampak Pertanian:**
-        - Kesesuaian cuaca untuk jenis tanaman
-        - Kondisi pertumbuhan yang diperkirakan
-        - Identifikasi risiko potensial
-        - Kebutuhan air dan irigasi
-        
-        📋 **Rekomendasi Praktis:**
-        - Aktivitas pertanian yang optimal
-        - Tindakan pencegahan
-        - Waktu terbaik untuk berbagai kegiatan
-        - Jadwal irigasi yang efisien
-        
-        🐛 **Alert Hama & Penyakit:**
-        - Tingkat risiko berdasarkan kondisi cuaca
-        - Prediksi masalah potensial
-        - Tips pencegahan dini
-        
-        **Catatan:** Prediksi ini berdasarkan analisis AI dan sebaiknya dikombinasikan dengan pengamatan lapangan dan konsultasi dengan ahli pertanian lokal.
-        """)
 
 elif choice == "Ask AI (Gemini)":
     st.header("🤖 Ask AI Using Gemini")
