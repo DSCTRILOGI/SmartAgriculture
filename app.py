@@ -69,7 +69,6 @@ with st.sidebar:
 # Display content based on choice
 choice = st.session_state.menu_choice
 
-# Now implement each page based on the choice
 if choice == "Weather Prediction":
     st.header("🌾 Weather Prediction for Agriculture")
     
@@ -97,57 +96,60 @@ if choice == "Weather Prediction":
         ])
         
         prediction_days = st.selectbox("Prediction Period", [
-            "3 days", "7 days", "14 days", "30 days", "60 days", "90 days", "180 days"
+            "3 days", "7 days", "14 days", "30 days"
         ])
+    
+    # Debug mode (opsional)
+    debug_mode = st.sidebar.checkbox("🔧 Debug Mode (Show Raw JSON)", value=False)
     
     api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti dengan API key Gemini Anda
     
     if st.button("🌦️ Get Agricultural Weather Prediction"):
         try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
             
             # Prompt yang disesuaikan untuk pertanian
-            prompt = f"""Sebagai ahli agroklimatologi, berikan prediksi cuaca untuk pertanian dalam format JSON dengan struktur berikut:
+            prompt = f"""Sebagai ahli agroklimatologi, berikan prediksi cuaca untuk pertanian dalam format JSON yang CLEAN dan VALID.
 
             Lokasi: {city}
             Jenis Tanaman: {crop_type}
             Tahap Pertumbuhan: {growth_stage}
             Periode Prediksi: {prediction_days}
 
-            Format JSON yang diinginkan:
+            WAJIB menggunakan format JSON yang EXACT seperti ini (tanpa tambahan text atau markdown):
             {{
                 "location": "{city}",
                 "crop": "{crop_type}",
                 "growth_stage": "{growth_stage}",
                 "prediction_period": "{prediction_days}",
                 "weather_forecast": {{
-                    "temperature_range": "suhu minimum-maksimum dalam celsius",
-                    "humidity": "kelembaban rata-rata dalam persen",
-                    "rainfall_probability": "probabilitas hujan dalam persen",
-                    "rainfall_amount": "perkiraan curah hujan dalam mm",
-                    "wind_speed": "kecepatan angin rata-rata",
-                    "sun_exposure": "tingkat paparan sinar matahari"
+                    "temperature_range": "24-33°C",
+                    "humidity": "80-95%",
+                    "rainfall_probability": "60-80%",
+                    "rainfall_amount": "250-400 mm/month",
+                    "wind_speed": "5-15 km/h",
+                    "sun_exposure": "4-6 hours/day"
                 }},
                 "agricultural_impact": {{
-                    "crop_suitability": "tingkat kesesuaian cuaca untuk tanaman (sangat baik/baik/cukup/kurang)",
-                    "growth_condition": "kondisi pertumbuhan yang diperkirakan",
-                    "potential_risks": ["daftar risiko potensial"],
-                    "water_requirement": "kebutuhan air/irigasi"
+                    "crop_suitability": "Baik",
+                    "growth_condition": "Kondisi ideal untuk persiapan lahan dengan curah hujan yang cukup",
+                    "potential_risks": ["Genangan air berlebih", "Serangan hama karena kelembaban tinggi"],
+                    "water_requirement": "Sedang - natural rainfall mencukupi"
                 }},
                 "recommendations": {{
-                    "farming_activities": ["aktivitas pertanian yang disarankan"],
-                    "preventive_measures": ["tindakan pencegahan yang perlu dilakukan"],
-                    "optimal_timing": ["waktu optimal untuk aktivitas tertentu"],
-                    "irrigation_schedule": "jadwal irigasi yang disarankan"
+                    "farming_activities": ["Persiapan lahan sawah", "Pengolahan tanah", "Pembuatan saluran drainase"],
+                    "preventive_measures": ["Pastikan drainase baik", "Monitor kelembaban tanah"],
+                    "optimal_timing": ["Pagi hari untuk aktivitas lapangan", "Hindari siang hari saat hujan"],
+                    "irrigation_schedule": "Tidak perlu irigasi tambahan - rainfall natural mencukupi"
                 }},
                 "pest_disease_alert": {{
-                    "risk_level": "tingkat risiko hama/penyakit (rendah/sedang/tinggi)",
-                    "potential_issues": ["kemungkinan masalah hama/penyakit"],
-                    "prevention_tips": ["tips pencegahan"]
+                    "risk_level": "Sedang",
+                    "potential_issues": ["Penyakit busuk akar", "Serangan keong mas"],
+                    "prevention_tips": ["Aplikasi fungisida preventif", "Kontrol gulma"]
                 }}
             }}
 
-            Berikan prediksi yang realistis berdasarkan kondisi iklim Indonesia dan karakteristik tanaman yang dipilih."""
+            PENTING: Response HARUS berupa JSON valid tanpa tambahan text apapun."""
             
             payload = {
                 "contents": [
@@ -184,6 +186,17 @@ if choice == "Weather Prediction":
                         
                         # Display hasil prediksi
                         st.success(f"🌾 Agricultural Weather Prediction for {weather_data.get('location', city)}")
+                        
+                        # Basic Info
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            st.info(f"🌾 **Crop:** {weather_data.get('crop', crop_type)}")
+                        with col2:
+                            st.info(f"🌱 **Growth Stage:** {weather_data.get('growth_stage', growth_stage)}")
+                        with col3:
+                            st.info(f"📅 **Prediction Period:** {weather_data.get('prediction_period', prediction_days)}")
+                        
+                        st.markdown("---")
                         
                         # Weather Forecast Section
                         st.subheader("🌤️ Weather Forecast")
@@ -291,13 +304,53 @@ if choice == "Weather Prediction":
                                 st.write(f"• {tips}")
                         
                     except (json.JSONDecodeError, KeyError) as e:
-                        # Jika gagal parse JSON, tampilkan response langsung dengan format yang lebih baik
+                        # Jika gagal parse JSON, tampilkan dalam format yang lebih baik
                         st.success(f"🌾 Agricultural Weather Analysis for {city}")
-                        st.write("**Crop:** " + crop_type)
-                        st.write("**Growth Stage:** " + growth_stage)
-                        st.write("**Prediction Period:** " + prediction_days)
-                        st.write("---")
-                        st.write(gemini_response)
+                        
+                        # Basic Info
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            st.info(f"🌾 **Crop:** {crop_type}")
+                        with col2:
+                            st.info(f"🌱 **Growth Stage:** {growth_stage}")
+                        with col3:
+                            st.info(f"📅 **Prediction Period:** {prediction_days}")
+                        
+                        st.markdown("---")
+                        
+                        # Parse dan format response text jika JSON parsing gagal
+                        response_text = gemini_response.strip()
+                        
+                        # Bersihkan response dari markdown formatting
+                        response_text = response_text.replace('```json', '').replace('```', '')
+                        
+                        # Tampilkan dalam format yang lebih readable
+                        st.subheader("📊 Weather Analysis Results")
+                        
+                        # Split response menjadi paragraf dan format dengan better structure
+                        lines = response_text.split('\n')
+                        current_section = ""
+                        
+                        for line in lines:
+                            line = line.strip()
+                            if line:
+                                if any(keyword in line.lower() for keyword in ['temperature', 'humidity', 'rainfall', 'wind']):
+                                    if current_section != "weather":
+                                        st.subheader("🌤️ Weather Forecast")
+                                        current_section = "weather"
+                                    st.write(f"• {line}")
+                                elif any(keyword in line.lower() for keyword in ['recommendation', 'suggest', 'advice']):
+                                    if current_section != "recommendations":
+                                        st.subheader("📋 Recommendations")
+                                        current_section = "recommendations"
+                                    st.write(f"• {line}")
+                                elif any(keyword in line.lower() for keyword in ['pest', 'disease', 'risk']):
+                                    if current_section != "pest":
+                                        st.subheader("🐛 Pest & Disease Alert")
+                                        current_section = "pest"
+                                    st.write(f"• {line}")
+                                else:
+                                    st.write(line)
                         
                 else:
                     st.error("No response from Gemini API")
