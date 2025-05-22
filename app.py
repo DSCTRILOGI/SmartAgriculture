@@ -189,7 +189,7 @@ if choice == "Weather Prediction":
                             st.metric("💧 Humidity", forecast.get('humidity', 'N/A'))
                         with col3:
                             st.metric("🌧️ Rainfall", forecast.get('rainfall_amount', 'N/A'))
-                        st.metric("☁️ Weather Condition", forecast.get('weather_condition', 'N/A'))
+                        st.write("☁️ Weather Condition", forecast.get('weather_condition', 'N/A'))
                             
                         
                         # Agricultural Impact Section
