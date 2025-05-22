@@ -123,7 +123,7 @@ if choice == "Weather Prediction":
                     "temperature_range": "suhu minimum-maksimum dalam celsius",
                     "humidity": "kelembaban rata-rata dalam persen",
                     "rainfall_amount": "perkiraan curah hujan dalam mm",
-                    "weather_condition": "kondisi cuaca (cerah/berawan/hujan)"
+                    "weather_condition": "(cerah/berawan/hujan)"
                 }},
                 "agricultural_impact": {{
                     "crop_suitability": "tingkat kesesuaian cuaca untuk tanaman (sangat baik/baik/cukup/kurang)",
