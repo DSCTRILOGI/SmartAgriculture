@@ -123,7 +123,7 @@ if choice == "Weather Prediction":
                     "temperature_range": "suhu minimum-maksimum dalam celsius",
                     "humidity": "kelembaban rata-rata dalam persen",
                     "rainfall_amount": "perkiraan curah hujan dalam mm",
-                    "weather_condition": "(cerah/berawan/hujan)"
+                    "weather_condition": "(cerah/berawan/hujan), berikan satu kata saja",
                 }},
                 "agricultural_impact": {{
                     "crop_suitability": "tingkat kesesuaian cuaca untuk tanaman (sangat baik/baik/cukup/kurang)",
@@ -189,7 +189,7 @@ if choice == "Weather Prediction":
                             st.metric("💧 Humidity", forecast.get('humidity', 'N/A'))
                         with col3:
                             st.metric("🌧️ Rainfall", forecast.get('rainfall_amount', 'N/A'))
-                        st.write("☁️ Weather Condition", forecast.get('weather_condition', 'N/A'))
+                        st.metric("☁️ Weather Condition", forecast.get('weather_condition', 'N/A'))
                             
                         
                         # Agricultural Impact Section
