@@ -15,6 +15,9 @@ st.set_page_config(page_title="Smart Agriculture AI", page_icon="🌾")
 # Add custom CSS to style the sidebar
 st.markdown("""
 <style>
+    .container {
+        width: 100%;
+    }
     .sidebar-button {
         width: 100%;
         margin: 5px 0px;
