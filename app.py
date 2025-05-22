@@ -56,7 +56,7 @@ with st.sidebar:
     if st.button("Ask AI (Gemini)", key="btn_gemini", use_container_width=True):
         st.session_state.menu_choice = "Ask AI (Gemini)"
         st.rerun()
-    if st.button("Weather Prediction", key="btn_cuaca", use_container_width=True):
+    if st.button("Weather Prediction", key="btn_cuaca", use_container_width=False):
         st.session_state.menu_choice = "Weather Prediction"
         st.rerun()
     if st.button("Plant Disease Detection", key="btn_penyakit", use_container_width=True):
