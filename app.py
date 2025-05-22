@@ -72,9 +72,9 @@ choice = st.session_state.menu_choice
 if choice == "Weather Prediction":
     st.header("🌦️ Weather Prediction By City")
     city = st.text_input("Enter City Name", "Jakarta")
-    api_key = "0d402044f615b840fb0d0e167bb8b23e"  # Ganti dengan API key WeatherStack
+    api_key = "AIzaSyAqdG2ufJDIOGEPmd0JhEMEc7RbBwloZVU"  # Ganti dengan API key WeatherStack
     if st.button("Prediction"):
-        url = f"http://api.weatherstack.com/current?access_key={api_key}&query={city}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}&query={city}"
         response = requests.get(url).json()
         if "current" not in response:
             st.error("City not found or API key is incorrect!")
