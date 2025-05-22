@@ -122,9 +122,7 @@ if choice == "Weather Prediction":
                 "weather_forecast": {{
                     "temperature_range": "suhu minimum-maksimum dalam celsius",
                     "humidity": "kelembaban rata-rata dalam persen",
-                    "rainfall_probability": "probabilitas hujan dalam persen",
                     "rainfall_amount": "perkiraan curah hujan dalam mm",
-                    "wind_speed": "kecepatan angin rata-rata",
                     "weather_condition": "kondisi cuaca (cerah/berawan/hujan)"
                 }},
                 "agricultural_impact": {{
@@ -184,16 +182,14 @@ if choice == "Weather Prediction":
                         st.subheader("🌤️ Weather Forecast")
                         forecast = weather_data.get('weather_forecast', {})
                         
-                        col1, col2, col3 = st.columns(3)
+                        col1, col2 = st.columns(2)
                         with col1:
                             st.metric("🌡️ Temperature", forecast.get('temperature_range', 'N/A'))
                             st.metric("💧 Humidity", forecast.get('humidity', 'N/A'))
                         with col2:
-                            st.metric("🌧️ Rain Probability", forecast.get('rainfall_probability', 'N/A'))
-                            st.metric("🌊 Rainfall Amount", forecast.get('rainfall_amount', 'N/A'))
-                        with col3:
-                            st.metric("💨 Wind Speed", forecast.get('wind_speed', 'N/A'))
                             st.metric("☁️ Weather Condition", forecast.get('weather_condition', 'N/A'))
+                            st.metric("🌊 Rainfall Amount", forecast.get('rainfall_amount', 'N/A'))
+                            
                         
                         # Agricultural Impact Section
                         st.subheader("🌱 Agricultural Impact")
