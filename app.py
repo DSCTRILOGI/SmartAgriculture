@@ -124,7 +124,8 @@ if choice == "Weather Prediction":
                     "humidity": "kelembaban rata-rata dalam persen",
                     "rainfall_probability": "probabilitas hujan dalam persen",
                     "rainfall_amount": "perkiraan curah hujan dalam mm",
-                    "wind_speed": "kecepatan angin rata-rata"
+                    "wind_speed": "kecepatan angin rata-rata",
+                    "weather_condition": "kondisi cuaca (cerah/berawan/hujan)"
                 }},
                 "agricultural_impact": {{
                     "crop_suitability": "tingkat kesesuaian cuaca untuk tanaman (sangat baik/baik/cukup/kurang)",
@@ -192,7 +193,7 @@ if choice == "Weather Prediction":
                             st.metric("🌊 Rainfall Amount", forecast.get('rainfall_amount', 'N/A'))
                         with col3:
                             st.metric("💨 Wind Speed", forecast.get('wind_speed', 'N/A'))
-                            
+                            st.metric("☁️ Weather Condition", forecast.get('weather_condition', 'N/A'))
                         
                         # Agricultural Impact Section
                         st.subheader("🌱 Agricultural Impact")
@@ -286,7 +287,7 @@ if choice == "Weather Prediction":
                         
                     except (json.JSONDecodeError, KeyError) as e:
                         # Jika gagal parse JSON, tampilkan response langsung dengan format yang lebih baik
-                        st.markdown("Silahkan Input Data Ulang")
+                        st.markdown("Silahkan Coba Ulang")
                         
                 else:
                     st.error("No response from Gemini API")
