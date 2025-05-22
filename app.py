@@ -106,7 +106,7 @@ if choice == "Weather Prediction":
     
     if st.button("🌦️ Get Agricultural Weather Prediction"):
         try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
             
             # Prompt yang disesuaikan untuk pertanian
             prompt = f"""Sebagai ahli agroklimatologi, berikan prediksi cuaca untuk pertanian dalam format JSON yang CLEAN dan VALID.
