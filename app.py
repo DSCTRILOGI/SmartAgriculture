@@ -173,181 +173,102 @@ if choice == "Weather Prediction":
                         # Ekstrak JSON dari response
                         json_start = gemini_response.find('{')
                         json_end = gemini_response.rfind('}') + 1
+                        json_str = gemini_response[json_start:json_end]
                         
-                        if json_start != -1 and json_end > json_start:
-                            json_str = gemini_response[json_start:json_end]
-                            weather_data = json.loads(json_str)
-                        else:
-                            # Jika tidak ada JSON yang valid, lempar exception
-                            raise json.JSONDecodeError("No valid JSON found", gemini_response, 0)
+                        weather_data = json.loads(json_str)
                         
                         # Display hasil prediksi
-                        st.success(f"🌾 Agricultural Weather Prediction for {weather_data.get('location', city)}")
-                        
-                        # Basic Info
-                        col1, col2, col3 = st.columns(3)
-                        with col1:
-                            st.info(f"🌾 **Crop:** {weather_data.get('crop', crop_type)}")
-                        with col2:
-                            st.info(f"🌱 **Growth Stage:** {weather_data.get('growth_stage', growth_stage)}")
-                        with col3:
-                            st.info(f"📅 **Prediction Period:** {weather_data.get('prediction_period', prediction_days)}")
-                        
-                        st.markdown("---")
+                        st.success(f"🌾 Agricultural Weather Prediction for {weather_data['location']}")
                         
                         # Weather Forecast Section
                         st.subheader("🌤️ Weather Forecast")
-                        forecast = weather_data.get('weather_forecast', {})
+                        forecast = weather_data['weather_forecast']
                         
                         col1, col2, col3 = st.columns(3)
                         with col1:
-                            st.metric("🌡️ Temperature", forecast.get('temperature_range', 'N/A'))
-                            st.metric("💧 Humidity", forecast.get('humidity', 'N/A'))
+                            st.metric("🌡️ Temperature", forecast['temperature_range'])
+                            st.metric("💧 Humidity", forecast['humidity'])
                         with col2:
-                            st.metric("🌧️ Rain Probability", forecast.get('rainfall_probability', 'N/A'))
-                            st.metric("🌊 Rainfall Amount", forecast.get('rainfall_amount', 'N/A'))
+                            st.metric("🌧️ Rain Probability", forecast['rainfall_probability'])
+                            st.metric("🌊 Rainfall Amount", forecast['rainfall_amount'])
                         with col3:
-                            st.metric("💨 Wind Speed", forecast.get('wind_speed', 'N/A'))
-                            st.metric("☀️ Sun Exposure", forecast.get('sun_exposure', 'N/A'))
+                            st.metric("💨 Wind Speed", forecast['wind_speed'])
+                            st.metric("☀️ Sun Exposure", forecast['sun_exposure'])
                         
                         # Agricultural Impact Section
                         st.subheader("🌱 Agricultural Impact")
-                        impact = weather_data.get('agricultural_impact', {})
+                        impact = weather_data['agricultural_impact']
                         
                         col1, col2 = st.columns(2)
                         with col1:
-                            suitability = impact.get('crop_suitability', 'Unknown')
-                            if "sangat baik" in suitability.lower() or "excellent" in suitability.lower():
+                            suitability = impact['crop_suitability']
+                            if "sangat baik" in suitability.lower():
                                 st.success(f"✅ Crop Suitability: {suitability}")
-                            elif "baik" in suitability.lower() or "good" in suitability.lower():
+                            elif "baik" in suitability.lower():
                                 st.info(f"ℹ️ Crop Suitability: {suitability}")
                             else:
                                 st.warning(f"⚠️ Crop Suitability: {suitability}")
                             
-                            st.write(f"🌿 **Growth Condition:** {impact.get('growth_condition', 'N/A')}")
-                            st.write(f"💧 **Water Requirement:** {impact.get('water_requirement', 'N/A')}")
+                            st.write(f"🌿 **Growth Condition:** {impact['growth_condition']}")
+                            st.write(f"💧 **Water Requirement:** {impact['water_requirement']}")
                         
                         with col2:
                             st.write("⚠️ **Potential Risks:**")
-                            risks = impact.get('potential_risks', [])
-                            if isinstance(risks, list):
-                                for risk in risks:
-                                    st.write(f"• {risk}")
-                            else:
-                                st.write(f"• {risks}")
+                            for risk in impact['potential_risks']:
+                                st.write(f"• {risk}")
                         
                         # Recommendations Section
                         st.subheader("📋 Farming Recommendations")
-                        recs = weather_data.get('recommendations', {})
+                        recs = weather_data['recommendations']
                         
                         col1, col2 = st.columns(2)
                         with col1:
                             st.write("🚜 **Recommended Activities:**")
-                            activities = recs.get('farming_activities', [])
-                            if isinstance(activities, list):
-                                for activity in activities:
-                                    st.write(f"• {activity}")
-                            else:
-                                st.write(f"• {activities}")
+                            for activity in recs['farming_activities']:
+                                st.write(f"• {activity}")
                             
                             st.write("🕐 **Optimal Timing:**")
-                            timings = recs.get('optimal_timing', [])
-                            if isinstance(timings, list):
-                                for timing in timings:
-                                    st.write(f"• {timing}")
-                            else:
-                                st.write(f"• {timings}")
+                            for timing in recs['optimal_timing']:
+                                st.write(f"• {timing}")
                         
                         with col2:
                             st.write("🛡️ **Preventive Measures:**")
-                            measures = recs.get('preventive_measures', [])
-                            if isinstance(measures, list):
-                                for measure in measures:
-                                    st.write(f"• {measure}")
-                            else:
-                                st.write(f"• {measures}")
+                            for measure in recs['preventive_measures']:
+                                st.write(f"• {measure}")
                             
-                            st.write(f"💧 **Irrigation Schedule:** {recs.get('irrigation_schedule', 'N/A')}")
+                            st.write(f"💧 **Irrigation Schedule:** {recs['irrigation_schedule']}")
                         
                         # Pest & Disease Alert Section
                         st.subheader("🐛 Pest & Disease Alert")
-                        pest_alert = weather_data.get('pest_disease_alert', {})
+                        pest_alert = weather_data['pest_disease_alert']
                         
-                        risk_level = pest_alert.get('risk_level', 'Unknown').lower()
-                        if "tinggi" in risk_level or "high" in risk_level:
-                            st.error(f"🚨 Risk Level: {pest_alert.get('risk_level', 'Unknown')}")
-                        elif "sedang" in risk_level or "medium" in risk_level:
-                            st.warning(f"⚠️ Risk Level: {pest_alert.get('risk_level', 'Unknown')}")
+                        risk_level = pest_alert['risk_level'].lower()
+                        if "tinggi" in risk_level:
+                            st.error(f"🚨 Risk Level: {pest_alert['risk_level']}")
+                        elif "sedang" in risk_level:
+                            st.warning(f"⚠️ Risk Level: {pest_alert['risk_level']}")
                         else:
-                            st.success(f"✅ Risk Level: {pest_alert.get('risk_level', 'Unknown')}")
+                            st.success(f"✅ Risk Level: {pest_alert['risk_level']}")
                         
                         col1, col2 = st.columns(2)
                         with col1:
                             st.write("🦠 **Potential Issues:**")
-                            issues = pest_alert.get('potential_issues', [])
-                            if isinstance(issues, list):
-                                for issue in issues:
-                                    st.write(f"• {issue}")
-                            else:
-                                st.write(f"• {issues}")
+                            for issue in pest_alert['potential_issues']:
+                                st.write(f"• {issue}")
                         
                         with col2:
                             st.write("🛡️ **Prevention Tips:**")
-                            tips = pest_alert.get('prevention_tips', [])
-                            if isinstance(tips, list):
-                                for tip in tips:
-                                    st.write(f"• {tip}")
-                            else:
-                                st.write(f"• {tips}")
+                            for tip in pest_alert['prevention_tips']:
+                                st.write(f"• {tip}")
                         
                     except (json.JSONDecodeError, KeyError) as e:
-                        # Jika gagal parse JSON, tampilkan dalam format yang lebih baik
+                        # Jika gagal parse JSON, tampilkan response langsung dengan format yang lebih baik
                         st.success(f"🌾 Agricultural Weather Analysis for {city}")
-                        
-                        # Basic Info
-                        col1, col2, col3 = st.columns(3)
-                        with col1:
-                            st.info(f"🌾 **Crop:** {crop_type}")
-                        with col2:
-                            st.info(f"🌱 **Growth Stage:** {growth_stage}")
-                        with col3:
-                            st.info(f"📅 **Prediction Period:** {prediction_days}")
-                        
-                        st.markdown("---")
-                        
-                        # Parse dan format response text jika JSON parsing gagal
-                        response_text = gemini_response.strip()
-                        
-                        # Bersihkan response dari markdown formatting
-                        response_text = response_text.replace('```json', '').replace('```', '')
-                        
-                        # Tampilkan dalam format yang lebih readable
-                        st.subheader("📊 Weather Analysis Results")
-                        
-                        # Split response menjadi paragraf dan format dengan better structure
-                        lines = response_text.split('\n')
-                        current_section = ""
-                        
-                        for line in lines:
-                            line = line.strip()
-                            if line:
-                                if any(keyword in line.lower() for keyword in ['temperature', 'humidity', 'rainfall', 'wind']):
-                                    if current_section != "weather":
-                                        st.subheader("🌤️ Weather Forecast")
-                                        current_section = "weather"
-                                    st.write(f"• {line}")
-                                elif any(keyword in line.lower() for keyword in ['recommendation', 'suggest', 'advice']):
-                                    if current_section != "recommendations":
-                                        st.subheader("📋 Recommendations")
-                                        current_section = "recommendations"
-                                    st.write(f"• {line}")
-                                elif any(keyword in line.lower() for keyword in ['pest', 'disease', 'risk']):
-                                    if current_section != "pest":
-                                        st.subheader("🐛 Pest & Disease Alert")
-                                        current_section = "pest"
-                                    st.write(f"• {line}")
-                                else:
-                                    st.write(line)
+                        st.write("**Crop:** " + crop_type)
+                        st.write("**Growth Stage:** " + growth_stage)
+                        st.write("**Prediction Period:** " + prediction_days)
+                        st.write("---")
+                        st.write(gemini_response)
                         
                 else:
                     st.error("No response from Gemini API")
@@ -358,6 +279,38 @@ if choice == "Weather Prediction":
             st.error(f"Network error: {str(e)}")
         except Exception as e:
             st.error(f"An unexpected error occurred: {str(e)}")
+    
+    # Additional Information Section
+    with st.expander("ℹ️ About Agricultural Weather Prediction"):
+        st.write("""
+        **Fitur Prediksi Cuaca Pertanian:**
+        
+        🌡️ **Parameter Cuaca:**
+        - Suhu udara (minimum & maksimum)
+        - Kelembaban relatif
+        - Probabilitas dan curah hujan
+        - Kecepatan angin
+        - Intensitas sinar matahari
+        
+        🌱 **Analisis Dampak Pertanian:**
+        - Kesesuaian cuaca untuk jenis tanaman
+        - Kondisi pertumbuhan yang diperkirakan
+        - Identifikasi risiko potensial
+        - Kebutuhan air dan irigasi
+        
+        📋 **Rekomendasi Praktis:**
+        - Aktivitas pertanian yang optimal
+        - Tindakan pencegahan
+        - Waktu terbaik untuk berbagai kegiatan
+        - Jadwal irigasi yang efisien
+        
+        🐛 **Alert Hama & Penyakit:**
+        - Tingkat risiko berdasarkan kondisi cuaca
+        - Prediksi masalah potensial
+        - Tips pencegahan dini
+        
+        **Catatan:** Prediksi ini berdasarkan analisis AI dan sebaiknya dikombinasikan dengan pengamatan lapangan dan konsultasi dengan ahli pertanian lokal.
+        """)
 
 elif choice == "Ask AI (Gemini)":
     st.header("🤖 Ask AI Using Gemini")
