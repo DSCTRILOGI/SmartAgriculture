@@ -200,16 +200,16 @@ if choice == "Weather Prediction":
                         st.subheader("🌤️ Weather Forecast")
                         forecast = weather_data.get('weather_forecast', {})
                         
-                        col1, col2, col3 = st.columns(2)
+                        col1, col2, col3 = st.columns(3)
                         with col1:
                             st.metric("🌡️ Temperature", forecast.get('temperature_range', 'N/A'))
                             st.metric("💧 Humidity", forecast.get('humidity', 'N/A'))
                         with col2:
-                            st.metric("🌧️ Rain Probability", forecast.get('rainfall_probability', 'N/A'))
-                            st.metric("🌊 Rainfall Amount", forecast.get('rainfall_amount', 'N/A'))
-                        with col3:
                             st.metric("💨 Wind Speed", forecast.get('wind_speed', 'N/A'))
                             st.metric("☀️ Sun Exposure", forecast.get('sun_exposure', 'N/A'))
+                        with col3:
+                            st.metric("🌧️ Rain Probability", forecast.get('rainfall_probability', 'N/A'))
+                            st.metric("🌊 Rainfall Amount", forecast.get('rainfall_amount', 'N/A'))
                         
                         # Agricultural Impact Section
                         st.subheader("🌱 Agricultural Impact")
