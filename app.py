@@ -15,9 +15,6 @@ st.set_page_config(page_title="Smart Agriculture AI", page_icon="🌾")
 # Add custom CSS to style the sidebar
 st.markdown("""
 <style>
-    * {
-        width: 100%;
-    }
     .sidebar-button {
         width: 100%;
         margin: 5px 0px;
@@ -185,13 +182,15 @@ if choice == "Weather Prediction":
                         st.subheader("🌤️ Weather Forecast")
                         forecast = weather_data.get('weather_forecast', {})
                         
-                        col1, col2 = st.columns(2)
+                        col1, col2, col3 = st.columns(3)
                         with col1:
                             st.metric("🌡️ Temperature", forecast.get('temperature_range', 'N/A'))
                             st.metric("💧 Humidity", forecast.get('humidity', 'N/A'))
                         with col2:
-                            st.metric("☁️ Weather Condition", forecast.get('weather_condition', 'N/A'))
                             st.metric("🌊 Rainfall Amount", forecast.get('rainfall_amount', 'N/A'))
+                        with col3:
+                            st.metric("☁️ Weather Condition", forecast.get('weather_condition', 'N/A'))
+                        
                             
                         
                         # Agricultural Impact Section
