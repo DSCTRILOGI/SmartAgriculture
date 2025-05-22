@@ -182,14 +182,13 @@ if choice == "Weather Prediction":
                         st.subheader("🌤️ Weather Forecast")
                         forecast = weather_data.get('weather_forecast', {})
                         
-                        col1, col2, col3 = st.columns(3)
+                        col1, col2 = st.columns(2)
                         with col1:
                             st.metric("🌡️ Temperature", forecast.get('temperature_range', 'N/A'))
-                        with col2:
                             st.metric("💧 Humidity", forecast.get('humidity', 'N/A'))
-                        with col3:
+                        with col2:
                             st.metric("🌧️ Rainfall", forecast.get('rainfall_amount', 'N/A'))
-                        st.metric("☁️ Weather Condition", forecast.get('weather_condition', 'N/A'))
+                            st.metric("☁️ Weather Condition", forecast.get('weather_condition', 'N/A'))
                             
                         
                         # Agricultural Impact Section
